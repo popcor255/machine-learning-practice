@@ -1,5 +1,3 @@
-
-
 function Population(p, m, num){
     this.population;
     this.matingPool;
@@ -27,7 +25,6 @@ function Population(p, m, num){
 
     this.matingPool = [];
 
-
     this.naturalSelection = function(){
         this.matingPool = [];
 
@@ -37,7 +34,7 @@ function Population(p, m, num){
         for(var i = 0; i < this.population.length; i++){
             if(this.population[i].fitness > maxFitness){
                 maxFitness = this.population[i].fitness;
-                console.log(this.population[i].genes);
+                this.best = this.population[i].getPhrase();
             }
 
             if(this.perfectScore == maxFitness){

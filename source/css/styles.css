@@ -14,3 +14,11 @@ canvas:focus {
 }
 .p5Canvas {
 }
+.best{
+  font-size:64;
+}
+.stats{
+  font-size:21;
+  margin:1%;
+  text-align: left;
+}
