@@ -1,51 +1,41 @@
-var bestPhrase;
-var allPhrases;
-var stats;
-var target;
-var popmax;
-var mutationRate;
-var population;
-var answers = new Array(10);
+var fruits = [
+    { name : "mango", score: 5},
+    { name : "blueberry", score: 3},
+    { name : "cherry", score: 1},
+    { name : "apple", score: 1},
+    { name : "melon", score: 80}
+];
 
-function preload() {
+function setup(){
+    createCanvas(400, 300);
+    background(0);
 
-}
+    var sum = 0;
 
-function setup() {
-    bestPhrase = createP("Best phrase:");
-    bestPhrase.class("best");
-
-    allPhrases = createP("All phrases:");
-    allPhrases.position(600, 75);
-    allPhrases.class("all");
-
-    stats = createP("Stats");
-    stats.class("stats");
-
-    target = "Austin is gay";
-    popmax = 200;
-    mutationRate = 0.01;
-
-    population = new Population(target, mutationRate, popmax);
-    
-}
-
-function draw(){
-    population.calcFitness();
-    population.naturalSelection();
-    population.generate();
-
-    stats.html(population.best);
-
-    answers.unshift(population.best);
-    
-    if(answers.length > 30){
-        answers.pop();
+    for(var i = 0; i < fruits.length; i++){
+        sum += fruits[i].score;
     }
 
-    allPhrases.html(answers.join("<br />"));
-
-    if(population.isFinished()){
-        noLoop();
+    for(var i = 0; i < fruits.length; i++){
+        fruits[i].prob = fruits[i].score / sum;
+        fruits[i].count = 0;
     }
+
+    var melonCount = 0;
+    for(var i = 0; i < 100; i++){
+        var fruit = pickOne(fruits);
+        fruit.count++;
+    }
+}
+
+function pickOne(list){
+    var index = 0;
+    var r = random(1);
+
+    while(r > 0){
+        r = r - list[index].prob;
+        index++;
+    }
+
+    return list[index - 1];
 }

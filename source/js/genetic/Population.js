@@ -6,6 +6,7 @@ function Population(p, m, num){
     this.target = p;
     this.mutationRate = m;
     this.perfectScore = 1;
+    this.averageFitness = 0;
 
     this.best = "";
 
@@ -23,13 +24,10 @@ function Population(p, m, num){
     
     this.calcFitness();
 
-    this.matingPool = [];
-
-    this.naturalSelection = function(){
-        this.matingPool = [];
-
+    this.generate = function(){
         var maxFitness = 0;
-        
+        var sumFitness = 0;
+        var amountFitness = 0;
         //pick the most fit DNA
         for(var i = 0; i < this.population.length; i++){
             if(this.population[i].fitness > maxFitness){
@@ -37,38 +35,50 @@ function Population(p, m, num){
                 this.best = this.population[i].getPhrase();
             }
 
+            sumFitness += this.population[i].fitness;
+            amountFitness += 1;
+
             if(this.perfectScore == maxFitness){
                 this.finished = true;
                 this.perfectScore = i;
                 break;
             }
         }
-
-        for(var i = 0; i < this.population.length; i++){
-            var fitnesss = map(this.population[i].fitness, 0, maxFitness, 0, 1);
-            var n = floor(fitnesss * 100);
-            for(var j = 0; j < n; j++){
-                this.matingPool.push(this.population[i]);
-            }
-        }
-    }
-
-    this.generate = function(){
         
+        var newPopulation = [];
+
         for(var i = 0; i < this.population.length; i++){
-            var a = floor(random(this.matingPool.length));
-            var b = floor(random(this.matingPool.length));
-            var partnerA = this.matingPool[a];
-            var partnerB = this.matingPool[b];
+            var partnerA = this.acceptReject(maxFitness);
+            var partnerB = this.acceptReject(maxFitness);
+
             var child = partnerA.crossover(partnerB);
             child.mutate(this.mutationRate);
-            this.population[i] = child;
+            newPopulation[i] = child;
         }
         
+        this.population = newPopulation;
+        this.averageFitness = sumFitness / amountFitness;
         this.generations++;
     }
 
+    this.acceptReject = function(maxVal){
+        var timeout = 10000;
+
+        while(timeout){
+            let index = floor(random(this.population.length));
+            let partner = this.population[index];
+            let r = random(maxVal);
+            if(partner.fitness > r){
+                return partner;
+            }
+
+            timeout--;
+        }
+
+        return null;
+    }
+
     this.isFinished = function(){
-        return this.finished;
+        return this.best == this.target;
     }
 }

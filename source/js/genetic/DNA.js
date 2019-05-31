@@ -19,7 +19,8 @@ function DNA(num){
             }
         }
 
-        this.fitness = score / target.length;   
+        this.fitness = score / target.length;
+        this.fitness = pow(this.fitness, 2) + 0.01;   
     }
 
     this.crossover = function(partner){
